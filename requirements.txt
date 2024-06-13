@@ -30,6 +30,9 @@ lion-pytorch==0.0.6
 # locon==0.0.4
 lycoris-lora==0.1.4
 xformers==0.0.22.post7 
+torch==2.1.0
+torchaudio==2.1.0
+torchtext==0.16.0
 # for kohya_ss library
 .
 jax==0.4.23
