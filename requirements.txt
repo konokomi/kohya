@@ -36,5 +36,5 @@ torchtext==0.16.0
 tf-keras==2.16.0
 # for kohya_ss library
 .
-jax==0.4.26
-jaxlib==0.4.26
+jax==0.4.23
+jaxlib==0.4.23
