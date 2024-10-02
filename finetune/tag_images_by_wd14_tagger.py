@@ -7,33 +7,22 @@ from PIL import Image
 import cv2
 from tqdm import tqdm
 import numpy as np
-from tensorflow.keras.layers import TFSMLayer
+from tensorflow.keras.models import load_model
 from huggingface_hub import hf_hub_download
 import torch
 from pathlib import Path
 
+import library.train_util as train_util
+
 # from wd14 tagger
 IMAGE_SIZE = 448
-IMAGE_EXTENSIONS = [".png", ".jpg", ".jpeg", ".webp", ".bmp", ".PNG", ".JPG", ".JPEG", ".WEBP", ".BMP"]
+
 # wd-v1-4-swinv2-tagger-v2 / wd-v1-4-vit-tagger / wd-v1-4-vit-tagger-v2/ wd-v1-4-convnext-tagger / wd-v1-4-convnext-tagger-v2
 DEFAULT_WD14_TAGGER_REPO = 'SmilingWolf/wd-v1-4-convnext-tagger-v2'
 FILES = ["keras_metadata.pb", "saved_model.pb", "selected_tags.csv"]
 SUB_DIR = "variables"
 SUB_DIR_FILES = ["variables.data-00000-of-00001", "variables.index"]
 CSV_FILE = FILES[-1]
-
-def glob_images_pathlib(dir_path, recursive):
-    image_paths = []
-    if recursive:
-        for ext in IMAGE_EXTENSIONS:
-            image_paths += list(dir_path.rglob("*" + ext))
-    else:
-        for ext in IMAGE_EXTENSIONS:
-            image_paths += list(dir_path.glob("*" + ext))
-    image_paths = list(set(image_paths))  # 重複を排除
-    image_paths.sort()
-    return image_paths
-
 
 def preprocess_image(image):
     image = np.array(image)
@@ -97,8 +86,7 @@ def main(args):
         print("using existing wd14 tagger model")
 
     # 画像を読み込む
-    #model = load_model(args.model_dir)
-    model = TFSMLayer(args.model_dir, call_endpoint='serving_default')
+    model = load_model(args.model_dir)
 
     # label_names = pd.read_csv("2022_0000_0899_6549/selected_tags.csv")
     # 依存ライブラリを増やしたくないので自力で読むよ
@@ -116,7 +104,7 @@ def main(args):
     # 画像を読み込む
     
     train_data_dir = Path(args.train_data_dir)
-    image_paths = glob_images_pathlib(train_data_dir, args.recursive)
+    image_paths = train_util.glob_images_pathlib(train_data_dir, args.recursive)
     print(f"found {len(image_paths)} images.")
 
     tag_freq = {}
@@ -126,7 +114,7 @@ def main(args):
     def run_batch(path_imgs):
         imgs = np.array([im for _, im in path_imgs])
 
-        probs = model(imgs, training=False)['predictions_sigmoid']
+        probs = model(imgs, training=False)
         probs = probs.numpy()
 
         for (image_path, _), prob in zip(path_imgs, probs):
@@ -215,7 +203,6 @@ def main(args):
     print("done!")
 
 
-print('aaa')
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("train_data_dir", type=str, help="directory for train images / 学習画像データのディレクトリ")
