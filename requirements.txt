@@ -31,9 +31,9 @@ lion-pytorch==0.0.6
 lycoris-lora==0.1.4
 xformers==0.0.28.post1
 triton==3.0.0
-torch==2.4.1+cu118
-torchvision==0.19.1+cu118
-torchaudio==2.4.1+cu118
+torch==2.4.1
+torchvision==0.19.1
+torchaudio==2.4.1
 torchtext==0.18.0 
 # for kohya_ss library
 
