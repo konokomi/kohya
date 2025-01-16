@@ -8,6 +8,7 @@ diffusers==0.10.2
 pytorch-lightning==1.9.0
 bitsandbytes==0.41.3.post2
 tensorflow==2.15.0
+keras==2.15.0
 safetensors==0.4.1
 # gradio==3.16.2
 # altair==4.2.2
@@ -19,7 +20,7 @@ requests==2.31.0
 timm==0.6.12
 fairscale==0.4.13
 # for WD14 captioning
-huggingface-hub==0.13.4
+huggingface-hub==0.22.0
 # for kohya trainer colab
 gallery-dl==1.25.1
 gdown==4.7.1
@@ -37,3 +38,4 @@ torchtext==0.16.0
 .
 jax==0.4.23
 jaxlib==0.4.23
+flax==0.7.5
